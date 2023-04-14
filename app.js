@@ -17,6 +17,14 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb').then(() => {
 });
 
 app.use(express.json());
+
+app.use((req, res, next) => {
+  req.user = {
+    _id: '6439cb0abddb14bf3f3f96a4',
+  };
+  next();
+});
+
 app.use('/users', users);
 
 // приложение слушает соединения на заданном порте
