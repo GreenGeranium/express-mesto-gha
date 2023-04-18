@@ -14,7 +14,13 @@ module.exports.findUser = (req, res) => {
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar }).then((data) => res.send(data))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Данные не валидны' });
+      } else {
+        res.status(500).send({ message: err.message });
+      }
+    });
 };
 
 // обновляет профиль

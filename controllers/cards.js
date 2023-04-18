@@ -11,8 +11,11 @@ module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id }).then((data) => res.send(data))
     .catch((err) => {
-      res.send(err);
-      res.status(500).send({ message: 'Произошла ошибка' });
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Данные не валидны' });
+      } else {
+        res.status(500).send({ message: err.message });
+      }
     });
 };
 
@@ -22,7 +25,7 @@ module.exports.deleteCard = (req, res) => {
     .then((data) => res.send(data))
     .catch((err) => {
       res.send(err);
-      res.status(404).send({ message: 'Произошла ошибка' });
+      res.status(500).send({ message: 'Произошла ошибка' });
     });
 };
 
