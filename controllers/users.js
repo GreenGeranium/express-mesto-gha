@@ -16,3 +16,17 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar }).then((data) => res.send(data))
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
+
+// обновляет профиль
+module.exports.updateProfile = (req, res) => {
+  User.findByIdAndUpdate(req.user._id, { name: 'Виктор', about: 'Гусев' }, { new: true })
+    .then((data) => res.send(data))
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+};
+
+// обновляет аватар
+module.exports.updateAvatar = (req, res) => {
+  User.findByIdAndUpdate(req.user._id, { avatar: 'www.testupdate.com' }, { new: true })
+    .then((data) => res.send(data))
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+};
