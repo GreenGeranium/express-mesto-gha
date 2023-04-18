@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 // подключение роутов
 const users = require('./routes/users');
+const cards = require('./routes/cards');
 
 // запуск сервера с дефолтным портом 3000
 const app = express();
@@ -26,6 +27,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/users', users);
+app.use('/cards', cards);
 
 // приложение слушает соединения на заданном порте
 app.listen(PORT, () => {
