@@ -29,7 +29,13 @@ app.use((req, res, next) => {
 app.use('/users', users);
 app.use('/cards', cards);
 
+app.use((req, res) => {
+  res.status(404).send('Извините, такой страницы не существует!');
+});
+
 // приложение слушает соединения на заданном порте
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
+
+// TODO Обновление данных пользователя с полем name меньше 2 символов

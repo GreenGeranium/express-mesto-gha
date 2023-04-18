@@ -41,6 +41,7 @@ module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
     .then((data) => {
+      console.log(req.body);
       res.send(data);
     })
     .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));

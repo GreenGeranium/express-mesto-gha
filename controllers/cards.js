@@ -22,14 +22,19 @@ module.exports.createCard = (req, res) => {
 
 // удаление карточки
 module.exports.deleteCard = (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.cardId)) {
+    res.status(400).send({ message: 'Некорректный идентификатор карточки' });
+    return;
+  }
   Card.findByIdAndRemove(req.params.cardId)
-    .then((data) => res.send(data))
-    .catch((err) => {
-      if (err.name === 'CastError') {
+    .then((data) => {
+      if (!data) {
         res.status(404).send({ message: 'Данной карточки нет' });
-      } else {
-        res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
+      res.send(data);
+    })
+    .catch(() => {
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -43,13 +48,14 @@ module.exports.addLike = (req, res) => {
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true, runValidators: true },
-  ).then((data) => res.send(data))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Данной карточки нет' });
-      } else {
-        res.status(500).send({ message: 'На сервере произошла ошибка' });
-      }
+  ).then((data) => {
+    if (!data) {
+      res.status(404).send({ message: 'Данной карточки нет' });
+    }
+    res.send(data);
+  })
+    .catch(() => {
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -63,12 +69,13 @@ module.exports.deleteLike = (req, res) => {
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true, runValidators: true },
-  ).then((data) => res.send(data))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Данной карточки нет' });
-      } else {
-        res.status(500).send({ message: 'На сервере произошла ошибка' });
-      }
+  ).then((data) => {
+    if (!data) {
+      res.status(404).send({ message: 'Данной карточки нет' });
+    }
+    res.send(data);
+  })
+    .catch(() => {
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
