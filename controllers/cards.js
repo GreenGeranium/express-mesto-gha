@@ -22,7 +22,7 @@ module.exports.deleteCard = (req, res) => {
     .then((data) => res.send(data))
     .catch((err) => {
       res.send(err);
-      res.status(400).send({ message: 'Произошла ошибка' });
+      res.status(404).send({ message: 'Произошла ошибка' });
     });
 };
 
