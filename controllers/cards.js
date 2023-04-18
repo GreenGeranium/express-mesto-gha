@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Card = require('../models/card');
 
 // возвращение всех карточек
@@ -34,6 +35,10 @@ module.exports.deleteCard = (req, res) => {
 
 // поставить лайк карточке
 module.exports.addLike = (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.cardId)) {
+    res.status(400).send({ message: 'Некорректный идентификатор карточки' });
+    return;
+  }
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
@@ -50,6 +55,10 @@ module.exports.addLike = (req, res) => {
 
 // убрать лайк карточке
 module.exports.deleteLike = (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.cardId)) {
+    res.status(400).send({ message: 'Некорректный идентификатор карточки' });
+    return;
+  }
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
