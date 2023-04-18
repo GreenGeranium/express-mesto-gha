@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const User = require('../models/user');
 
 module.exports.getUsers = (req, res) => {
@@ -6,14 +7,20 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.findUser = (req, res) => {
-  User.findById(req.params.userId)
-    .then((user) => res.send(user))
-    .catch((err) => {
-      if (err.name === 'CastError') {
+  if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
+    res.status(400).send({ message: 'Некорректный идентификатор пользователя' });
+    return;
+  }
+  User.findOne({ _id: req.params.userId })
+    .then((user) => {
+      if (!user) {
         res.status(404).send({ message: 'Пользователь не найден' });
-      } else {
-        res.status(500).send({ message: 'На сервере произошла ошибка' });
+        return;
       }
+      res.send(user);
+    })
+    .catch(() => {
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -31,14 +38,17 @@ module.exports.createUser = (req, res) => {
 
 // обновляет профиль
 module.exports.updateProfile = (req, res) => {
-  User.findByIdAndUpdate(req.user._id, { name: 'Виктор', about: 'Гусев' }, { new: true })
-    .then((data) => res.send(data))
+  const { name, about } = req.body;
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
+    .then((data) => {
+      res.send(data);
+    })
     .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 };
 
 // обновляет аватар
 module.exports.updateAvatar = (req, res) => {
-  User.findByIdAndUpdate(req.user._id, { avatar: 'www.testupdate.com' }, { new: true })
+  User.findByIdAndUpdate(req.user._id, { avatar: req.body.avatar }, { new: true })
     .then((data) => res.send(data))
     .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 };
