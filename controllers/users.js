@@ -8,7 +8,13 @@ module.exports.getUsers = (req, res) => {
 module.exports.findUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => res.send(user))
-    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(404).send({ message: 'Пользователь не найден' });
+      } else {
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
+      }
+    });
 };
 
 module.exports.createUser = (req, res) => {
