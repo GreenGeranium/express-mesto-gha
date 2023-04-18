@@ -20,7 +20,10 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((data) => res.send(data))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      res.send(err);
+      res.status(400).send({ message: 'Произошла ошибка' });
+    });
 };
 
 // поставить лайк карточке
