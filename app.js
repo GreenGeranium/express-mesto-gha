@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 // подключение роутов
 const users = require('./routes/users');
 const cards = require('./routes/cards');
+const { login, createUser } = require('./controllers/users');
+const { auth } = require('./middlewares/auth');
 
 // запуск сервера с дефолтным портом 3000
 const app = express();
@@ -25,6 +27,11 @@ app.use((req, res, next) => {
   };
   next();
 });
+
+app.post('/signin', login);
+app.post('/signup', createUser);
+
+app.use(auth);
 
 app.use('/users', users);
 app.use('/cards', cards);
