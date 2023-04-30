@@ -24,18 +24,12 @@ app.use(express.json());
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string(),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }).unknown(true),
 }), login);
 app.post('/signup', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string(),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }).unknown(true),
@@ -43,8 +37,24 @@ app.post('/signup', celebrate({
 
 app.use(auth);
 
-app.use('/users', users);
-app.use('/cards', cards);
+app.use('/users', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string(),
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }).unknown(true),
+}), users);
+app.use('/cards', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    link: Joi.string(),
+    owner: Joi.string().required(),
+    likes: Joi.object().ref('User'),
+    createdAt: Joi.date(),
+  }).unknown(true),
+}), cards);
 
 app.use((req, res) => {
   res.status(404).send({ message: 'Извините, такой страницы не существует!' });
