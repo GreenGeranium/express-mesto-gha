@@ -66,9 +66,13 @@ app.use((req, res) => {
   res.status(404).send({ message: 'Извините, такой страницы не существует!' });
 });
 
+app.use(errors());
+// глобальный обработчик ошибок
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
   const { statusCode = 500, message } = err;
+
+  console.log(err.message); // Log the entire request object
 
   if (err.name === 'ValidationError') {
     const errorsList = Object.values(err.errors).map((error) => error.message);
@@ -85,8 +89,6 @@ app.use((err, req, res, next) => {
     });
   }
 });
-
-app.use(errors());
 
 // приложение слушает соединения на заданном порте
 app.listen(PORT, () => {
