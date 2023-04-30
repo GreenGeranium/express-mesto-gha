@@ -16,6 +16,15 @@ module.exports.login = (req, res) => {
   });
 };
 
+// возвращает информацию о текущем пользователе
+module.exports.getMyUser = (req, res) => {
+  console.log(true);
+  const { email } = req.body;
+
+  User.findOne({ email }).then((user) => res.send(user))
+    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
+};
+
 // возвращение всех пользователей
 module.exports.getUsers = (req, res) => {
   User.find({}).then((user) => res.send(user))
@@ -50,14 +59,14 @@ module.exports.createUser = (req, res) => {
   bcrypt.hash(password, 10).then((hash) => {
     User.create({
       name, about, avatar, email, password: hash,
-    }).then((data) => res.status(201).send(data));
-  }).catch((err) => {
-    if (err.name === 'ValidationError') {
-      const errors = Object.values(err.errors).map((error) => error.message);
-      res.status(400).send({ message: 'Данные не валидны', errors });
-    } else {
-      res.status(500).send({ message: 'На сервере произошла ошибка' });
-    }
+    }).then((data) => res.status(201).send(data)).catch((err) => {
+      if (err.name === 'ValidationError') {
+        const errors = Object.values(err.errors).map((error) => error.message);
+        res.status(400).send({ message: 'Данные не валидны', errors });
+      } else {
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
+      }
+    });
   });
 };
 
