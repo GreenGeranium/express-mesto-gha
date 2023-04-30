@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
 // возвращение всех пользователей
@@ -28,16 +29,21 @@ module.exports.findUser = (req, res) => {
 
 // создание нового пользователя
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar }).then((data) => res.status(201).send(data))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        const errors = Object.values(err.errors).map((error) => error.message);
-        res.status(400).send({ message: 'Данные не валидны', errors });
-      } else {
-        res.status(500).send({ message: 'На сервере произошла ошибка' });
-      }
-    });
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  bcrypt.hash(password, 10).then((hash) => {
+    User.create({
+      name, about, avatar, email, password: hash,
+    }).then((data) => res.status(201).send(data));
+  }).catch((err) => {
+    if (err.name === 'ValidationError') {
+      const errors = Object.values(err.errors).map((error) => error.message);
+      res.status(400).send({ message: 'Данные не валидны', errors });
+    } else {
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
+    }
+  });
 };
 
 // обновляет профиль

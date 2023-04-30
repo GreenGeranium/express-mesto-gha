@@ -37,5 +37,3 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
-
-// TODO Обновление данных пользователя с полем name меньше 2 символов
