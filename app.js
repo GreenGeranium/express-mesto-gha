@@ -55,7 +55,7 @@ app.use('/users', celebrate({
 app.use('/cards', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string(),
+    link: Joi.string().required(),
     owner: Joi.string().required(),
     likes: Joi.object().ref('User'),
     createdAt: Joi.date(),

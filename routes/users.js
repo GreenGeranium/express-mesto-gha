@@ -6,8 +6,8 @@ const {
 // возвращение всех пользователей
 users.get('/', getUsers);
 
-/* // возвращение пользователя по id
-users.get('/:userId', findUser); */
+// возвращение пользователя по id
+users.get('/:userId', findUser);
 
 // возвращает информацию о текущем пользователе
 users.get('/me', getMyUser);
