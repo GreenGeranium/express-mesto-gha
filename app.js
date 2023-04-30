@@ -1,6 +1,7 @@
 // подключение всех библиотек
 const express = require('express');
 const mongoose = require('mongoose');
+const { celebrate, Joi, errors } = require('celebrate');
 
 // подключение роутов
 const users = require('./routes/users');
@@ -21,8 +22,24 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb').then(() => {
 
 app.use(express.json());
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string(),
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }).unknown(true),
+}), login);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string(),
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }).unknown(true),
+}), createUser);
 
 app.use(auth);
 
@@ -32,6 +49,28 @@ app.use('/cards', cards);
 app.use((req, res) => {
   res.status(404).send({ message: 'Извините, такой страницы не существует!' });
 });
+
+app.use((err, req, res, next) => {
+  // если у ошибки нет статуса, выставляем 500
+  const { statusCode = 500, message } = err;
+
+  if (err.name === 'ValidationError') {
+    const errorsList = Object.values(err.errors).map((error) => error.message);
+    res.status(400).send({ message: 'Данные не валидны', errorsList });
+  } else if (err.name === 'CastError') {
+    return res
+      .status(400)
+      .send({ message: 'Некорректный идентификатор' });
+  } else {
+    res.status(statusCode).send({
+      message: statusCode === 500
+        ? 'На сервере произошла ошибка'
+        : message,
+    });
+  }
+});
+
+app.use(errors());
 
 // приложение слушает соединения на заданном порте
 app.listen(PORT, () => {
