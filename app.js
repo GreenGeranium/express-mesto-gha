@@ -48,8 +48,6 @@ app.use('/users', celebrate({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().regex(/https?:\/\/(w{3}.)?([0-9A-Za-z-]{1,}).([A-Za-z]){1,}?([0-9A-Za-z-._~:?#@!$&'()*+,;=\/\[\]]{1,})#?/m),
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
   }).unknown(true),
 }), users);
 app.use('/cards', celebrate({
