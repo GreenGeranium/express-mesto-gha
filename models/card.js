@@ -11,12 +11,12 @@ const cardSchema = new mongoose.Schema({
   link: {
     type: String,
     required: [true, 'Поле "link" должно быть заполнено'],
-    /*    validate: {
+    validate: {
       validator(v) {
-        return /\d{3}-\d{3}-\d{4}/.test(v);
+        return /https?:\/\/(w{3}.)?([0-9A-Za-z-]{1,}).([A-Za-z]){1,}?([0-9A-Za-z-._~:?#@!$&'()*+,;=\/\[\]]{1,})#?/gm.test(v);
       },
       message: 'Поле "link" не является валидным',
-    }, */
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,

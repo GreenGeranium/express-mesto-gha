@@ -66,9 +66,9 @@ app.use((req, res) => {
   res.status(404).send({ message: 'Извините, такой страницы не существует!' });
 });
 
-app.use(errors());
 // глобальный обработчик ошибок
-app.use((err, req, res, next) => {
+app.use(errors());
+app.use((err, req, res) => {
   // если у ошибки нет статуса, выставляем 500
   const { statusCode = 500, message } = err;
 
@@ -76,18 +76,17 @@ app.use((err, req, res, next) => {
 
   if (err.name === 'ValidationError') {
     const errorsList = Object.values(err.errors).map((error) => error.message);
-    res.status(400).send({ message: 'Данные не валидны', errorsList });
-  } else if (err.name === 'CastError') {
+    return res.status(400).send({ message: 'Данные не валидны', errorsList });
+  } if (err.name === 'CastError') {
     return res
       .status(400)
       .send({ message: 'Некорректный идентификатор' });
-  } else {
-    res.status(statusCode).send({
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
   }
+  return res.status(statusCode).send({
+    message: statusCode === 500
+      ? 'На сервере произошла ошибка'
+      : message,
+  });
 });
 
 // приложение слушает соединения на заданном порте
