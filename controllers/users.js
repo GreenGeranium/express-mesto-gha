@@ -52,6 +52,7 @@ module.exports.createUser = (req, res, next) => {
       name, about, avatar, email, password: hash,
     })
       .then((data) => {
+        console.log(data);
         const user = {
           name: data.name,
           about: data.about,
