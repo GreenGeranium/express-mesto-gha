@@ -18,7 +18,8 @@ users.get('/:userId', (req, res, next) => {
       params: Joi.object().keys({
         userId: Joi.string().alphanum().length(24),
       }),
-    }).findUser(req, res, next);
+    });
+    findUser(req, res, next);
   }
 });
 
