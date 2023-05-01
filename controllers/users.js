@@ -18,9 +18,9 @@ module.exports.login = (req, res) => {
 
 // возвращает информацию о текущем пользователе
 module.exports.getMyUser = (req, res, next) => {
-  console.log(true);
-  const { email } = req.body;
-  User.findOne({ email }).then((user) => res.send(user))
+  const { _id } = req.user;
+  console.log(_id);
+  User.findOne({ _id }).then((user) => res.send(user))
     .catch(next);
 };
 
