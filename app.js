@@ -52,9 +52,9 @@ app.use('/users', celebrate({
 }), users);
 app.use('/cards', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().regex(/https?:\/\/(w{3}.)?([0-9A-Za-z-]{1,}).([A-Za-z]){1,}?([0-9A-Za-z-._~:?#@!$&'()*+,;=\/\[\]]{1,})#?/m),
-    owner: Joi.string().required(),
+    name: Joi.string().min(2).max(30),
+    link: Joi.string().regex(/https?:\/\/(w{3}.)?([0-9A-Za-z-]{1,}).([A-Za-z]){1,}?([0-9A-Za-z-._~:?#@!$&'()*+,;=\/\[\]]{1,})#?/m),
+    owner: Joi.string(),
     likes: Joi.object().ref('User'),
     createdAt: Joi.date(),
   }).unknown(true),
