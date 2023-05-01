@@ -79,10 +79,9 @@ app.use((err, req, res, next) => {
     return res
       .status(400)
       .send({ message: 'Некорректный идентификатор' });
-  } if (err.code = 11000) {
+  } if (err.code === 11000) {
     return res.status(409).send({ message: 'Данный профиль уже существует' });
-  }
-  return res.status(statusCode).send({
+  } return res.status(statusCode).send({
     message: statusCode === 500
       ? 'На сервере произошла ошибка'
       : message,
