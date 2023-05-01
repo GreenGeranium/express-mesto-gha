@@ -26,7 +26,7 @@ module.exports.getMyUser = (req, res, next) => {
 
 // возвращение всех пользователей
 module.exports.getUsers = (req, res, next) => {
-  User.find({}).then((user) => res.send(user))
+  User.find({}).then((data) => res.send(data))
     .catch(next);
 };
 
@@ -52,7 +52,6 @@ module.exports.createUser = (req, res, next) => {
       name, about, avatar, email, password: hash,
     })
       .then((data) => {
-        console.log(data);
         const user = {
           name: data.name,
           about: data.about,
