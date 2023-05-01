@@ -22,12 +22,9 @@ module.exports.createCard = (req, res, next) => {
 module.exports.deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((data) => {
-      console.log(req.user._id);
-      console.log(data.owner.toString());
       if (!data) {
         throw new NotFoundError('Нет карточки с таким id');
-      }
-      if (!(req.user._id === data.owner.toString())) {
+      } else if (!(req.user._id === data.owner.toString())) {
         throw new ForbiddenErr('Вы не можете удалить чужую карточку');
       }
       res.send(data);
