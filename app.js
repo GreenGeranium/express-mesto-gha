@@ -55,7 +55,7 @@ app.use('/users', celebrate({
 app.use('/cards', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required(),
+    link: Joi.string().required().regex(/https?:\/\/(w{3}.)?([0-9A-Za-z-]{1,}).([A-Za-z]){1,}?([0-9A-Za-z-._~:?#@!$&'()*+,;=\/\[\]]{1,})#?/m),
     owner: Joi.string().required(),
     likes: Joi.object().ref('User'),
     createdAt: Joi.date(),
@@ -71,8 +71,7 @@ app.use(errors());
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
   const { statusCode = 500, message } = err;
-  console.log(true);
-  console.log(err.message); // Log the entire request object
+  console.log(err); // Log the entire request object
   if (err.name === 'ValidationError') {
     const errorsList = Object.values(err.errors).map((error) => error.message);
     return res.status(400).send({ message: 'Данные не валидны', errorsList });
@@ -80,6 +79,8 @@ app.use((err, req, res, next) => {
     return res
       .status(400)
       .send({ message: 'Некорректный идентификатор' });
+  } if (err.code = 11000) {
+    return res.status(409).send({ message: 'Данный профиль уже существует' });
   }
   return res.status(statusCode).send({
     message: statusCode === 500
