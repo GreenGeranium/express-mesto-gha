@@ -8,14 +8,22 @@ const {
 cards.get('/', getCards);
 
 // создание карточки
-cards.post('/', createCard);
+cards.post('/', celebrate({
+  body: Joi.object().keys({
+    name: Joi.required(),
+    link: Joi.required(),
+  }),
+}), createCard);
 
 // удаление карточки
-cards.delete('/:cardId', deleteCard);
+cards.delete('/:cardId', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24),
+  }),
+}), deleteCard);
 
 // поставить лайк карточке
 cards.put('/:cardId/likes', celebrate({
-  // валидируем параметры
   params: Joi.object().keys({
     cardId: Joi.string().alphanum().length(24),
   }),
@@ -23,7 +31,6 @@ cards.put('/:cardId/likes', celebrate({
 
 // убрать лайк карточке
 cards.delete('/:cardId/likes', celebrate({
-  // валидируем параметры
   params: Joi.object().keys({
     cardId: Joi.string().alphanum().length(24),
   }),
