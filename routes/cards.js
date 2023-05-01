@@ -1,4 +1,5 @@
 const cards = require('express').Router();
+const { celebrate, Joi } = require('celebrate');
 const {
   getCards, createCard, deleteCard, addLike, deleteLike,
 } = require('../controllers/cards');
@@ -13,9 +14,19 @@ cards.post('/', createCard);
 cards.delete('/:cardId', deleteCard);
 
 // поставить лайк карточке
-cards.put('/:cardId/likes', addLike);
+cards.put('/:cardId/likes', celebrate({
+  // валидируем параметры
+  params: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24),
+  }),
+}), addLike);
 
 // убрать лайк карточке
-cards.delete('/:cardId/likes', deleteLike);
+cards.delete('/:cardId/likes', celebrate({
+  // валидируем параметры
+  params: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24),
+  }),
+}), deleteLike);
 
 module.exports = cards;
