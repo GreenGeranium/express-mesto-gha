@@ -7,18 +7,18 @@ const {
 // возвращение всех пользователей
 users.get('/', getUsers);
 
-users.get('/:userId', celebrate({
-  params: Joi.object().keys({
-    userId: Joi.string().alphanum().length(24),
-  }),
-}), (req, res, next) => {
+users.get('/:userId', (req, res, next) => {
   const { userId } = req.params;
   // возвращает информацию о текущем пользователе
   if (userId === 'me') {
     getMyUser(req, res, next);
   } else {
     // возвращение пользователя по id
-    findUser(req, res, next);
+    celebrate({
+      params: Joi.object().keys({
+        userId: Joi.string().alphanum().length(24),
+      }),
+    }).findUser(req, res, next);
   }
 });
 
