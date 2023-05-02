@@ -53,11 +53,6 @@ app.use(errors());
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
   const { statusCode = 500, message } = err;
-  // Log the entire request object
-  if (err.code === 11000) {
-    console.log(true);
-    throw new AlreadyExistsErr('Данный профиль уже существует');
-  }
   return res.status(statusCode).send({
     message: statusCode === 500
       ? 'На сервере произошла ошибка'
@@ -65,7 +60,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// приложение слушает соединения на заданном порте
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });

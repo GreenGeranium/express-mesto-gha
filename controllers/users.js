@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
+const AlreadyExistsErr = require('../errors/already-exists');
 
 // авторизация пользователя
 module.exports.login = (req, res, next) => {
@@ -56,7 +57,12 @@ module.exports.createUser = (req, res, next) => {
         };
         res.status(201).send(user);
       })
-      .catch(next);
+      .catch((err) => {
+        if (err.code === 11000) {
+          next(new AlreadyExistsErr('Данный профиль уже существует'));
+        }
+        next(err);
+      });
   });
 };
 
