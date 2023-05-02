@@ -46,7 +46,7 @@ app.use(auth);
 app.use('/users', users);
 app.use('/cards', cards);
 
-app.use((req, res) => NotFoundError('Извините, такой страницы не существует!'));
+app.use((req, res) => { throw new NotFoundError('Извините, такой страницы не существует!'); });
 
 // глобальный обработчик ошибок
 app.use(errors());
