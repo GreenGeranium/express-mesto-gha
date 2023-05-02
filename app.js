@@ -35,6 +35,9 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().regex(/https?:\/\/(w{3}.)?([0-9A-Za-z-]{1,}).([A-Za-z]){1,}?([0-9A-Za-z-._~:?#@!$&'()*+,;=\/\[\]]{1,})#?/m),
   }),
 }), createUser);
 
@@ -50,10 +53,12 @@ app.use(errors());
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
   const { statusCode = 500, message } = err;
-  console.log(err); // Log the entire request object
+  // Log the entire request object
   if (err.code === 11000) {
-    return AlreadyExistsErr('Данный профиль уже существует');
-  } return res.status(statusCode).send({
+    console.log(true);
+    throw new AlreadyExistsErr('Данный профиль уже существует');
+  }
+  return res.status(statusCode).send({
     message: statusCode === 500
       ? 'На сервере произошла ошибка'
       : message,
