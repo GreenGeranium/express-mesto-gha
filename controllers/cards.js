@@ -1,3 +1,4 @@
+const { Types } = require('mongoose');
 const Card = require('../models/card');
 const NotFoundError = require('../errors/not-found-err');
 const ForbiddenErr = require('../errors/forbidden-err');
@@ -20,18 +21,16 @@ module.exports.createCard = (req, res, next) => {
 
 // удаление карточки
 module.exports.deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .then((data) => {
-      if (!data) {
-        throw new NotFoundError('Нет карточки с таким id');
-      } else if (!(req.user._id === data.owner.toString())) {
-        throw new ForbiddenErr('Вы не можете удалить чужую карточку');
-      }
-      res.send(data);
-    })
-    .catch((err) => {
-      next(err);
-    });
+  Card.findById(req.params.cardId).then((data) => {
+    if (!data) {
+      throw new NotFoundError('Нет карточки с таким id');
+    } else if (!(req.user._id === data.owner.toString())) {
+      throw new ForbiddenErr('Вы не можете удалить чужую карточку');
+    }
+    return Card.deleteOne({ _id: data._id });
+  }).catch((err) => {
+    next(err);
+  });
 };
 
 // поставить лайк карточке
@@ -39,7 +38,7 @@ module.exports.addLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
-    { new: true, runValidators: true },
+    { new: true },
   ).then((data) => {
     if (!data) {
       throw new NotFoundError('Нет карточки с таким id');
@@ -56,7 +55,7 @@ module.exports.deleteLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
-    { new: true, runValidators: true },
+    { new: true },
   ).then((data) => {
     if (!data) {
       throw new NotFoundError('Нет карточки с таким id');
