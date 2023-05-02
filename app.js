@@ -45,18 +45,19 @@ app.use(auth);
 app.use('/users', users);
 app.use('/cards', cards);
 
-app.use((req, res) => { throw new NotFoundError('Извините, такой страницы не существует!'); });
+app.use(() => { throw new NotFoundError('Извините, такой страницы не существует!'); });
 
 // глобальный обработчик ошибок
 app.use(errors());
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
   const { statusCode = 500, message } = err;
-  return res.status(statusCode).send({
+  res.status(statusCode).send({
     message: statusCode === 500
       ? 'На сервере произошла ошибка'
       : message,
   });
+  next();
 });
 
 app.listen(PORT, () => {
