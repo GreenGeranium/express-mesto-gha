@@ -23,9 +23,19 @@ users.get('/:userId', celebrate({
 });
 
 // обновляет профиль
-users.patch('/me', updateProfile);
+users.patch('/me', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().regex(/https?:\/\/(w{3}.)?([0-9A-Za-z-]{1,}).([A-Za-z]){1,}?([0-9A-Za-z-._~:?#@!$&'()*+,;=\/\[\]]{1,})#?/m),
+  }).unknown(true),
+}), updateProfile);
 
 // обновляет аватар
-users.patch('/me/avatar', updateAvatar);
+users.patch('/me/avatar', celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string().regex(/https?:\/\/(w{3}.)?([0-9A-Za-z-]{1,}).([A-Za-z]){1,}?([0-9A-Za-z-._~:?#@!$&'()*+,;=\/\[\]]{1,})#?/m),
+  }).unknown(true),
+}), updateAvatar);
 
 module.exports = users;
