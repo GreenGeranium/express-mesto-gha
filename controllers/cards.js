@@ -1,4 +1,3 @@
-const { Types } = require('mongoose');
 const Card = require('../models/card');
 const NotFoundError = require('../errors/not-found-err');
 const ForbiddenErr = require('../errors/forbidden-err');

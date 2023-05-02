@@ -11,7 +11,6 @@ module.exports.login = (req, res, next) => {
     const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
     res.send({ token });
   }).catch((err) => {
-    console.log(err);
     next(err);
   });
 };
@@ -19,7 +18,6 @@ module.exports.login = (req, res, next) => {
 // возвращает информацию о текущем пользователе
 module.exports.getMyUser = (req, res, next) => {
   const { _id } = req.user;
-  console.log(_id);
   User.findOne({ _id }).then((user) => res.send(user))
     .catch(next);
 };
