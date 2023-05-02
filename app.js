@@ -39,15 +39,7 @@ app.post('/signup', celebrate({
 app.use(auth);
 
 app.use('/users', users);
-app.use('/cards', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    link: Joi.string().regex(/https?:\/\/(w{3}.)?([0-9A-Za-z-]{1,}).([A-Za-z]){1,}?([0-9A-Za-z-._~:?#@!$&'()*+,;=\/\[\]]{1,})#?/m),
-    owner: Joi.string(),
-    likes: Joi.object().ref('User'),
-    createdAt: Joi.date(),
-  }).unknown(true),
-}), cards);
+app.use('/cards', cards);
 
 app.use((req, res) => {
   res.status(404).send({ message: 'Извините, такой страницы не существует!' });

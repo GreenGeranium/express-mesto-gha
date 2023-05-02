@@ -9,7 +9,7 @@ users.get('/', getUsers);
 
 users.get('/:userId', celebrate({
   params: Joi.object().keys({
-    userId: Joi.alternatives().try(Joi.string().alphanum().length(24), Joi.string().valid('me')),
+    userId: Joi.alternatives().try(Joi.string().hex().length(24), Joi.string().valid('me')),
   }),
 }), (req, res, next) => {
   const { userId } = req.params;
