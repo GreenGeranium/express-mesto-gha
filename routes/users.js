@@ -7,6 +7,7 @@ const {
 // возвращение всех пользователей
 users.get('/', getUsers);
 
+// возвращение пользовательских данных по id либо me
 users.get('/:userId', celebrate({
   params: Joi.object().keys({
     userId: Joi.alternatives().try(Joi.string().hex().length(24), Joi.string().valid('me')),

@@ -23,6 +23,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb').then(() => {
 
 app.use(express.json());
 
+// роут логина
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -30,6 +31,7 @@ app.post('/signin', celebrate({
   }),
 }), login);
 
+// роут регистрации
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -40,11 +42,15 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
+// мидлвер автоматической аутентификации
 app.use(auth);
 
+// роут пользователей
 app.use('/users', users);
+// роут карточек
 app.use('/cards', cards);
 
+// роут несуществующей страницы
 app.use(() => { throw new NotFoundError('Извините, такой страницы не существует!'); });
 
 // глобальный обработчик ошибок
