@@ -61,6 +61,7 @@ module.exports.createUser = (req, res, next) => {
       .catch((err) => {
         if (err.code === 11000) {
           next(new AlreadyExistsErr('Данный профиль уже существует'));
+          return;
         }
         next(err);
       });

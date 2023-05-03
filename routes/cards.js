@@ -12,10 +12,7 @@ cards.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
     link: Joi.string().regex(/^https?:\/\/(www\.)?([\w-]+).([\w\-.~:?#@!$&'()*/+,;[\]]+)/m).required(),
-    owner: Joi.string(),
-    likes: Joi.object().ref('User'),
-    createdAt: Joi.date(),
-  }).unknown(true),
+  }),
 }), createCard);
 
 // удаление карточки
