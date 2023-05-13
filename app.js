@@ -3,6 +3,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
 
+// логирование
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+
 // подключение роутов
 const users = require('./routes/users');
 const cards = require('./routes/cards');
@@ -21,6 +24,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb').then(() => {
   console.log(err);
 });
 
+app.use(requestLogger);
 app.use(express.json());
 
 // роут логина
@@ -52,6 +56,8 @@ app.use('/cards', cards);
 
 // роут несуществующей страницы
 app.use(() => { throw new NotFoundError('Извините, такой страницы не существует!'); });
+
+app.use(errorLogger);
 
 // глобальный обработчик ошибок
 app.use(errors());
