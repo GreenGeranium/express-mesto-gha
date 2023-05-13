@@ -14,12 +14,12 @@ const { auth } = require('./middlewares/auth');
 const NotFoundError = require('./errors/not-found-err');
 
 const allowedCors = [
-  'http://localhost:4000', "http://localhost:3000"
+  'http://localhost:4000', 'http://localhost:3000',
 ];
 
 // запуск сервера с дефолтным портом 3000
 const app = express();
-const { PORT = 4000 } = process.env;
+const { PORT = 3000 } = process.env;
 
 // подключение к базе данных mestodb
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb').then(() => {
@@ -31,11 +31,11 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb').then(() => {
 app.use(express.json());
 
 // CORS
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   const { origin } = req.headers;
   const { method } = req;
   const requestHeaders = req.headers['access-control-request-headers'];
-  const DEFAULT_ALLOWED_METHODS = "GET,HEAD,PUT,PATCH,POST,DELETE";
+  const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
   if (allowedCors.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
   }
